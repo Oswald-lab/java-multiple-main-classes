@@ -26,7 +26,24 @@ public class LoginService {
             throw new IllegalStateException("An account already exists for " + normalized + ".");
         }
         String salt = newSalt();
-        User user = new User(normalized, salt, hash(password, salt));
+        User user = new User(normalized, salt, hash(password, salt), AuthProvider.PASSWORD);
+        usersByEmail.put(normalized, user);
+        return user;
+    }
+
+    public User signInWithGoogle(String email, boolean emailVerified) {
+        if (email == null || !email.contains("@")) {
+            throw new IllegalArgumentException("A valid Google email address is required.");
+        }
+        if (!emailVerified) {
+            throw new IllegalArgumentException("The Google account email must be verified.");
+        }
+        String normalized = email.trim().toLowerCase();
+        User existing = usersByEmail.get(normalized);
+        if (existing != null) {
+            return existing;
+        }
+        User user = new User(normalized, "", "", AuthProvider.GOOGLE);
         usersByEmail.put(normalized, user);
         return user;
     }

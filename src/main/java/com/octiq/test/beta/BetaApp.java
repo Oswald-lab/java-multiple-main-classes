@@ -12,5 +12,8 @@ public class BetaApp {
                 .isPresent();
         System.out.println("Login for demo@octiq.test: "
                 + (authenticated ? "success" : "failed"));
+
+        User googleUser = loginService.signInWithGoogle("alice@gmail.com", true);
+        System.out.println("Google sign-in for " + googleUser.email() + ": success (" + googleUser.provider() + ")");
     }
 }
